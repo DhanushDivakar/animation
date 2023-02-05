@@ -45,6 +45,8 @@ class _MyHomePageState extends State<MyHomePage>
       duration: const Duration(seconds: 2),
     );
     _animation = Tween<double>(begin: 0.0, end: 2 * pi).animate(_controller);
+
+    _controller.repeat();
   }
 
   @override
@@ -57,24 +59,29 @@ class _MyHomePageState extends State<MyHomePage>
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Transform(
-          alignment: Alignment.center,
-          transform: Matrix4.identity()..rotateZ(0.1),
-          child: Container(
-            width: 100,
-            height: 100,
-            decoration: BoxDecoration(
-                color: Colors.green,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: const Offset(0, 3),
-                  )
-                ]),
-          ),
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            return Transform(
+              alignment: Alignment.center,
+              transform: Matrix4.identity()..rotateZ(_animation.value),
+              child: Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: const Offset(0, 3),
+                      )
+                    ]),
+              ),
+            );
+          },
         ),
       ),
     );
