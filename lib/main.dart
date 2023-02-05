@@ -12,10 +12,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home:const  MyHomePage(),
+      theme: ThemeData(brightness: Brightness.dark),
+
+      darkTheme: ThemeData(brightness: Brightness.dark),
+      themeMode: ThemeMode.dark,
+      debugShowCheckedModeBanner: false,
+      debugShowMaterialGrid: false,
+      home: const MyHomePage(),
     );
   }
 }
@@ -38,3 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+/*
+theme: ThemeData(brightness: Brightness)
+
+ */
