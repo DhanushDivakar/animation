@@ -134,25 +134,50 @@ class AnimatedWidget extends StatefulWidget {
   State<AnimatedWidget> createState() => _AnimatedWidgetState();
 }
 
-class _AnimatedWidgetState extends State<AnimatedWidget> {
+class _AnimatedWidgetState extends State<AnimatedWidget>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _counterClockwiseRotationController;
+  late Animation<double> _counterCLockwiseRotationAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _counterClockwiseRotationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
+
+    _counterCLockwiseRotationAnimation = Tween<double>(begin: 0, end: -(pi / 2))
+        .animate(_counterClockwiseRotationController);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 200,
-              height: 200,
-              color: Colors.black,
-            ),
-            Container(
-              width: 200,
-              height: 200,
-              color: Colors.white,
-            ),
-          ],
+        body: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ClipPath(
+                clipper: const HalfCircleClipper(side: CircleSide.left),
+                child: Container(
+                  width: 200,
+                  height: 200,
+                  color: Colors.black,
+                ),
+              ),
+              ClipPath(
+                clipper: const HalfCircleClipper(side: CircleSide.right),
+                child: Container(
+                  width: 200,
+                  height: 200,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
