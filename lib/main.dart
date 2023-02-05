@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.dark,
       debugShowCheckedModeBanner: false,
       debugShowMaterialGrid: false,
-      home: const MyHomePage(),
+      home: const AnimatedWidget(),
     );
   }
 }
@@ -42,10 +42,9 @@ class _MyHomePageState extends State<MyHomePage>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 3),
     );
     _animation = Tween<double>(begin: 0.0, end: 2 * pi).animate(_controller);
-
     _controller.repeat();
   }
 
@@ -64,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage>
           builder: (context, child) {
             return Transform(
               alignment: Alignment.center,
-              transform: Matrix4.identity()..rotateZ(_animation.value),
+              transform: Matrix4.identity()..rotateX(_animation.value),
               child: Container(
                 width: 100,
                 height: 100,
@@ -82,6 +81,78 @@ class _MyHomePageState extends State<MyHomePage>
               ),
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+enum CircleSide {
+  left,
+  right,
+}
+
+extension Topath on CircleSide {
+  Path toPath(Size size) {
+    final path = Path();
+    late Offset offset;
+    late bool clockwise;
+
+    switch (this) {
+      case CircleSide.left:
+        path.moveTo(size.width, 0);
+        offset = Offset(size.width, size.height);
+        clockwise = false;
+        break;
+      case CircleSide.right:
+        offset = Offset(0, size.height);
+        clockwise = true;
+        break;
+    }
+    path.arcToPoint(offset,
+        radius: Radius.elliptical(size.width / 2, size.height / 2),
+        clockwise: clockwise);
+    path.close();
+    return path;
+  }
+}
+
+class HalfCircleClipper extends CustomClipper<Path> {
+  final CircleSide side;
+
+  const HalfCircleClipper({required this.side});
+  @override
+  Path getClip(Size size) => side.toPath(size);
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => true;
+}
+
+class AnimatedWidget extends StatefulWidget {
+  const AnimatedWidget({super.key});
+
+  @override
+  State<AnimatedWidget> createState() => _AnimatedWidgetState();
+}
+
+class _AnimatedWidgetState extends State<AnimatedWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        body: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 200,
+              height: 200,
+              color: Colors.black,
+            ),
+            Container(
+              width: 200,
+              height: 200,
+              color: Colors.white,
+            ),
+          ],
         ),
       ),
     );
